@@ -189,6 +189,10 @@ public class AddStuffActivity extends AppCompatActivity implements ExitActivityD
     public void testniMetodkojiNeradiNista() {
 
     }
+
+    public void testniMetodkojiNeradiNista2() {
+
+    }
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
     }
