@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/snimi_stuff"
+        android:title="@string/snimi_stuff"
+        android:icon="@drawable/ic_save_button_light"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/obrisi_stuff"
+        android:title="@string/obrisi_stuff"
+        app:showAsAction="never"/>
+</menu>

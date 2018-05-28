@@ -1,0 +1,66 @@
+<resources>
+    <string name="app_name">StuffCollector</string>
+
+    // Title za item za dodavanje dummy data u glavnom activitiju
+    <string name="sa_menu_item_add_dummy">Dodaj dummy data</string>
+
+    // Title za item za dodavanje jednog proizvoda u glavnom activitiju
+    <string name="sa_menu_item_add_one">Dodaj proizvod</string>
+
+    // Title za item za brisanje svih podataka
+    <string name="sa_menu_delete_all">Obriši sve podatke</string>
+
+    // Tekst imena proizvoda
+    <string name="name_field">Proizvod</string>
+
+    // Tekst imena slike
+    <string name="picture_field">Slika</string>
+
+    // Tekst imena tipa proizvoda
+    <string name="type_field">Tip proizvoda</string>
+
+    // Tekst imena dobavljaca
+    <string name="supplier_field">Proizvođač</string>
+
+    // Tekst imena kolicine
+    <string name="kolicina_polje">Količina</string>
+
+    // Tekst naziva brojcane vrijednsoti
+    <string name="kolicina_naziv_polje">komada</string>
+
+    // Opcije u spineru
+    <string-array name="tipovi_proizvoda">
+        <item>Nov</item>
+        <item>Polovan</item>
+    </string-array>
+
+    // Tekst naziva opcije za snimanje stuffa
+    <string name="snimi_stuff">Snimi</string>
+
+    // Tekst naziva opcije za brisanje stuffa
+    <string name="obrisi_stuff">Obrisi</string>
+
+    // Naziv za addStuffActivity u add modu
+    <string name="add_stuff_mode">Add New Stuff</string>
+
+    // Naziv za addStuffActivity u edit modu
+    <string name="edit_stuff_mode">Edit Stuff</string>
+
+    // Tekst toast poruke o gresci prilikom upisa u bazu
+    <string name="greska_upisa">Greska prilikom upisa u bazu</string>
+
+    // Tekst toast poruke o ispravnom upisu u bazu
+    <string name="ispravan_upis">Unos u bazu uspjesan</string>
+
+    // Nazim AlertDialoga za izlazak iz activityja AddSTuffActivity
+    <string name="alert_dialog_name">Izlaz iz Dodavanja Stuffa</string>
+
+    // Poruka za AlertDialog koji upozorava da postoje nesnimljene promjene
+    <string name="alert_dialog_msg">Napustiti izmjene i izaći?</string>
+
+    // Poruka na pozitivnom dugmentu alert dialoga
+    <string name="alert_pozitive_msg">Napusti</string>
+
+    // Poruka na negativnom dugmetu alert dialoga
+    <string name="alert_negative_msg">Ostani</string>
+</resources>
