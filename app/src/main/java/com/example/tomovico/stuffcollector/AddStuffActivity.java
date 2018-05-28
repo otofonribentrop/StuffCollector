@@ -186,6 +186,9 @@ public class AddStuffActivity extends AppCompatActivity implements ExitActivityD
         NavUtils.navigateUpFromSameTask(this);
     }
 
+    public void testniMetodkojiNeradiNista() {
+
+    }
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
     }
