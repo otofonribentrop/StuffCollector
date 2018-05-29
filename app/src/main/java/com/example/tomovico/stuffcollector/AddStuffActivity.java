@@ -200,4 +200,8 @@ public class AddStuffActivity extends AppCompatActivity implements ExitActivityD
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
     }
+
+    public void tandaraMandara() {
+
+    }
 }

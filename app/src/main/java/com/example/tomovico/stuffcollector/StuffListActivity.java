@@ -138,4 +138,8 @@ public class StuffListActivity extends AppCompatActivity {
     private void deleteAll() {
 
     }
+
+    public void tandaraMandara() {
+
+    }
 }
