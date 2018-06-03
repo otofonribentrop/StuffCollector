@@ -139,15 +139,4 @@ public class StuffListActivity extends AppCompatActivity {
 
     }
 
-    public void tandaraMandara() {
-
-    }
-
-    public void moreLjudno() {
-
-    }
-
-    public void ojha() {
-
-    }
 }
