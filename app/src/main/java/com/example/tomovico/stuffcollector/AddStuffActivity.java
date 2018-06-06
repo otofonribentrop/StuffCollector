@@ -124,6 +124,8 @@ public class AddStuffActivity extends AppCompatActivity implements ExitActivityD
         switch (itemSelected) {
             case R.id.snimi_stuff:
                 snimiStuff();
+                finish();
+                return true;
             case android.R.id.home:
                 // Ukoliko tekuci stuff nije izmjenjen onda izlazim normalno
                 if (!stuffHasChanged) {
