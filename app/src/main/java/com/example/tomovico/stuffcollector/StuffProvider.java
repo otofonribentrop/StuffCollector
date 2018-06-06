@@ -14,14 +14,10 @@ import android.util.Log;
 import com.example.tomovico.stuffcollector.data.StuffContract;
 import com.example.tomovico.stuffcollector.data.StuffDbHelper;
 
-public class StuffProvider extends ContentProvider{
-
-    // Kreiram DB helper objekat
-    private StuffDbHelper dbHelper;
+public class StuffProvider extends ContentProvider {
 
     // Kreiram UriMatcher objekt
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-
     // Definisem konstante za Uri Matcher
     private static final int STUFF_ALL = 100;
     private static final int STUFF_ID = 101;
@@ -31,6 +27,9 @@ public class StuffProvider extends ContentProvider{
         uriMatcher.addURI(StuffContract.CONTENT_AUTHORITY, StuffContract.PATH_STUFF, STUFF_ALL);
         uriMatcher.addURI(StuffContract.CONTENT_AUTHORITY, StuffContract.PATH_STUFF + "/#", STUFF_ID);
     }
+
+    // Kreiram DB helper objekat
+    private StuffDbHelper dbHelper;
 
     @Override
     public boolean onCreate() {
@@ -50,7 +49,9 @@ public class StuffProvider extends ContentProvider{
         switch (uriMatcher.match(uri)) {
             // Slucaj kada se trazi cijela tabela
             case STUFF_ALL:
-                return db.query(StuffContract.StuffEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor = db.query(StuffContract.StuffEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+
             // Slucaj kada se trazi jedan red tabele
             case STUFF_ID:
                 // Dobijam id kolone
@@ -60,13 +61,22 @@ public class StuffProvider extends ContentProvider{
                 selection = "_id=?";
 
                 // Definisem selectionArgs
-                selectionArgs = new String[] {String.valueOf(idKolone)};
+                selectionArgs = new String[]{String.valueOf(idKolone)};
 
                 // Pravim upit na bazu i vracam rezultat
-                return db.query(StuffContract.StuffEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor = db.query(StuffContract.StuffEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
 
-        };
-        return null;
+            default:
+                throw new IllegalArgumentException("Los query:" + uri);
+        }
+
+        // Postavljam notifikaciju za promjenu
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        Log.e("StuffProvider", "Poslije setNotification");
+        Uri notifUri = cursor.getNotificationUri();
+        Log.e("StuffProvider", "postavljeni uri = " + notifUri);
+        return cursor;
     }
 
     @Nullable
@@ -80,6 +90,7 @@ public class StuffProvider extends ContentProvider{
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         // Dobijam od dbHelpera referencu na DB objekat
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        long insertedRowId = 0;
 
         Log.e("StuffProvider", "Usao u insert");
 
@@ -88,18 +99,19 @@ public class StuffProvider extends ContentProvider{
                 Log.e("StuffProvider", "Usao u case STUFF_ALL");
 
                 // Radim insert u db i dobijam broj insertovane kolone
-                long insertedRowId = db.insert(StuffContract.StuffEntry.TABLE_NAME, null, values);
+                insertedRowId = db.insert(StuffContract.StuffEntry.TABLE_NAME, null, values);
                 if (insertedRowId == -1) {
-                    Log.e("StuffProvider","Desila se greska prilikom insert oepracije");
+                    Log.e("StuffProvider", "Desila se greska prilikom insert oepracije");
                 }
 
-                // Kreiram i vracam Uri za insetovanu koloni
-                return ContentUris.withAppendedId(uri, insertedRowId);
-
             default:
-                Log.e("StuffProvider","Nemoguc je insert za ovakav Uri");
+                Log.e("StuffProvider", "Nemoguc je insert za ovakav Uri");
         }
-        return null;
+
+        // Notifikacija izmjene
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return ContentUris.withAppendedId(uri, insertedRowId);
     }
 
     @Override
