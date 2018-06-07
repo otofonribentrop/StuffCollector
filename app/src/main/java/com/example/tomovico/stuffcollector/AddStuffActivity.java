@@ -1,10 +1,14 @@
 package com.example.tomovico.stuffcollector;
 
 import android.app.Dialog;
+import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
@@ -14,6 +18,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +26,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -28,7 +34,18 @@ import android.widget.Toast;
 import com.example.tomovico.stuffcollector.data.StuffContract;
 import com.example.tomovico.stuffcollector.data.StuffDbHelper;
 
-public class AddStuffActivity extends AppCompatActivity implements ExitActivityDialog.NoticeDialogListener {
+public class AddStuffActivity
+        extends AppCompatActivity
+        implements ExitActivityDialog.NoticeDialogListener, LoaderManager.LoaderCallbacks<Cursor> {
+
+    // ID loadera
+    public static final int EDIT_STUFF_LOADER_ID = 1;
+
+    // Lokalna varijabla za tekuci uri edit activitija
+    private Uri currentUri = null;
+
+    // Lokalna varijabla koja cuva tekuci cursor
+    private Cursor currentCursor = null;
 
     // Varijable u kojima cuvam Viewove sa podacima
     private EditText et_stuff_producer;
@@ -40,8 +57,8 @@ public class AddStuffActivity extends AppCompatActivity implements ExitActivityD
     private EditText et_supplier_phone;
     private EditText et_stuff_kolicina;
 
-    // Objekat u kome cuvam ono sto je spinner selektovao
-    private Object spinnerSelection;
+    // Varijabla u kome cuvam ono sto je spinner selektovao
+    private int stuffType;
 
     // Varijabla koja cuva stanje promjena edit polja
     private boolean stuffHasChanged = false;
@@ -55,6 +72,8 @@ public class AddStuffActivity extends AppCompatActivity implements ExitActivityD
 
             return false;
         }
+
+
     };
 
     @Override
@@ -66,35 +85,11 @@ public class AddStuffActivity extends AppCompatActivity implements ExitActivityD
         Intent currentIntent = getIntent();
 
         // Dobijam Uri koji se nalazi u intentu
-        Uri currentUri = currentIntent.getData();
+        currentUri = currentIntent.getData();
 
-        // Ukoliko je Uri prazan onda sam u add new stuff modu
-        if (currentUri != null) {
-            setTitle(R.string.edit_stuff_mode);
-        }
-        // Ukoliko Uri nije prazan onda sam u edit modu
-        else {
-            setTitle(R.string.add_stuff_mode);
-        }
+        Log.e("AddStuff onCreate","curentUri = " + currentUri);
 
-        // Referenca na spiner
-        spinner_tip_proizvoda = (Spinner) findViewById(R.id.spinner_tip_proizvoda);
-
-        // Postavljam OnItemSelectedListener na spinner
-        spinner_tip_proizvoda.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                spinnerSelection = parent.getItemAtPosition(position);
-               // stuffHasChanged = true;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        // Reference na Viewove
+        // Postavljam reference na Viewove
         et_stuff_producer = (EditText) findViewById(R.id.et_stuff_producer);
         et_stuff_name = (EditText) findViewById(R.id.et_stuff_name);
         et_stuff_price = (EditText) findViewById(R.id.et_stuff_price);
@@ -113,6 +108,114 @@ public class AddStuffActivity extends AppCompatActivity implements ExitActivityD
         et_supplier_phone.setOnTouchListener(onTouchListener);
         et_stuff_kolicina.setOnTouchListener(onTouchListener);
 
+        // Podesim spinner
+        setupSpinner();
+
+        // Ukoliko Uri nije prazan onda sam u edit modu
+        if (currentUri != null) {
+            setTitle(R.string.edit_stuff_mode);
+
+            //Inicijalizujem loader
+            getLoaderManager().initLoader(EDIT_STUFF_LOADER_ID, null, this);
+
+            Log.e("onCreate", "EditStuff mode");
+
+        }
+        // Ukoliko je Uri prazan onda sam u add new stuff modu
+        else {
+            setTitle(R.string.add_stuff_mode);
+        }
+
+
+    }
+
+    private void setupSpinner() {
+        // Referenca na spiner
+        spinner_tip_proizvoda = (Spinner) findViewById(R.id.spinner_tip_proizvoda);
+
+        // Adapter koji puni spinner
+        ArrayAdapter spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.tipovi_proizvoda, android.R.layout.simple_spinner_item);
+
+        // Specifikacija dropdown styla
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+
+        // Asociranje spinera sa array adapterom
+        spinner_tip_proizvoda.setAdapter(spinnerAdapter);
+
+        // Postavljam OnItemSelectedListener na spinner i ocitavam njegovo stanje kada se aktivira listener
+        spinner_tip_proizvoda.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String spinnerSelection = (String) parent.getItemAtPosition(position);
+
+                if (!TextUtils.isEmpty(spinnerSelection)) {
+                    if (spinnerSelection.equals("Nov")) {
+                        stuffType = StuffContract.StuffEntry.TYPE_NEW;
+                    } else if (spinnerSelection.equals("Polovan")) {
+                        stuffType = StuffContract.StuffEntry.TYPE_USED;
+                    } else if (spinnerSelection.equals("Nepoznato")) {
+                        stuffType = StuffContract.StuffEntry.TYPE_UNKNOWN;
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+    private void addStuffMode() {
+
+    }
+
+    private void editStuffMode() {
+
+        Log.e("editStuffMode", "usao u metod dditStuffMode");
+
+        if (currentCursor == null) {
+            Log.e("editStuffMode", "currentCursor je NULL");
+            return;
+        }
+
+        // Pozicioniranje kursora
+        currentCursor.moveToFirst();
+
+        // Uzimam podatke iz kursora
+        String stuffProducer = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER));
+        String stuffName = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_NAME));
+        int stuffPrice = currentCursor.getInt(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_CIJENA));
+        int tipProizvoda = currentCursor.getInt(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_TYPE));
+        String supplierName = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER));
+        String supplierEmail = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER));
+        String supplierPhone = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER));
+        String stuffKolicina = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER));
+
+        // Popunjavam polja activitija sa podacima iz cursora
+        et_stuff_producer.setText(stuffProducer);
+        et_stuff_name.setText(stuffName);
+        et_stuff_price.setText(stuffPrice + "");
+        et_supplier_name.setText(supplierName);
+        et_supplier_email.setText(supplierEmail);
+        et_supplier_phone.setText(supplierPhone);
+        et_stuff_kolicina.setText(stuffKolicina + "");
+
+        switch (tipProizvoda) {
+            case StuffContract.StuffEntry.TYPE_NEW:
+                spinner_tip_proizvoda.setSelection(StuffContract.StuffEntry.TYPE_NEW);
+                stuffType = StuffContract.StuffEntry.TYPE_NEW;
+                break;
+            case StuffContract.StuffEntry.TYPE_USED:
+                spinner_tip_proizvoda.setSelection(StuffContract.StuffEntry.TYPE_NEW);
+                stuffType = StuffContract.StuffEntry.TYPE_USED;
+                break;
+            case StuffContract.StuffEntry.TYPE_UNKNOWN:
+                spinner_tip_proizvoda.setSelection(StuffContract.StuffEntry.TYPE_NEW);
+                stuffType = StuffContract.StuffEntry.TYPE_UNKNOWN;
+                break;
+        }
+
+        Log.e("editStuffMode","Izlazim iz editStuffMode");
     }
 
     @Override
@@ -142,7 +245,6 @@ public class AddStuffActivity extends AppCompatActivity implements ExitActivityD
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.add_stuff_activity_menu, menu);
@@ -150,35 +252,53 @@ public class AddStuffActivity extends AppCompatActivity implements ExitActivityD
     }
 
     public void snimiStuff() {
+
         // Sakupljam podatke iz Viewa
-        String stuffProducer = et_stuff_producer.getText().toString().trim();
         String stuffName = et_stuff_name.getText().toString().trim();
-        String stuffPrice = et_stuff_price.getText().toString().trim();
+        String stuffProducer = et_stuff_producer.getText().toString().trim();
+        int stuffPrice = Integer.valueOf(et_stuff_price.getText().toString().trim());
+        int spinnerState = stuffType;
         String supplierName = et_supplier_name.getText().toString().trim();
         String supplierEmail = et_supplier_email.getText().toString().trim();
         String supplierPhone = et_supplier_phone.getText().toString().trim();
-        String tipProizvoda = spinnerSelection.toString();
         int stuffKolicina = Integer.valueOf(et_stuff_kolicina.getText().toString().trim());
+
 
         // Kreiram vrijednosti koje upisujem u bazu
         ContentValues values = new ContentValues();
         values.put(StuffContract.StuffEntry.COLUMN_STUFF_NAME, stuffName);
         values.put(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER, stuffProducer);
-        values.put(StuffContract.StuffEntry.COLUMN_STUFF_CIJENA, Integer.valueOf(stuffPrice));
-        values.put(StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY, Integer.valueOf(stuffKolicina));
+        values.put(StuffContract.StuffEntry.COLUMN_STUFF_CIJENA, stuffPrice);
+        values.put(StuffContract.StuffEntry.COLUMN_STUFF_TYPE, spinnerState);
         values.put(StuffContract.StuffEntry.COLUMN_SUPPLIER_NAME, supplierName);
         values.put(StuffContract.StuffEntry.COLUMN_SUPPLIER_EMAIL, supplierEmail);
         values.put(StuffContract.StuffEntry.COLUMN_SUPPLIER_PHONE, supplierPhone);
+        values.put(StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY, stuffKolicina);
 
-        // Upisujem u bazu koristenjem ContentProvidera
-        Uri currentUri = getContentResolver().insert(StuffContract.StuffEntry.CONTENT_URI, values);
-
-        // Provjera upisa na osnovu povratnog urija
+        // Provjeravam u kom sam modu
+        // Ako sam u Add New Stuff Modu onda zovem insert metod content provajdera
         if (currentUri == null) {
-            Toast.makeText(this, R.string.greska_upisa, Toast.LENGTH_SHORT).show();
+            // Upisujem u bazu koristenjem ContentProvidera
+            Uri vraceniUri = getContentResolver().insert(StuffContract.StuffEntry.CONTENT_URI, values);
+
+            // Provjera upisa na osnovu povratnog urija
+            if (vraceniUri == null) {
+                Toast.makeText(this, R.string.greska_upisa, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, R.string.ispravan_upis, Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(this, R.string.ispravan_upis, Toast.LENGTH_SHORT).show();
+            // Ako sam u edit stuff modu onda zovem update metod content provajdera
+            int rowId = getContentResolver().update(currentUri, values, null, null);
+
+            if (rowId < 0) {
+                Toast.makeText(this, R.string.greska_upisa, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, R.string.ispravan_upis, Toast.LENGTH_SHORT).show();
+            }
+
         }
+
 
 
     }
@@ -188,22 +308,47 @@ public class AddStuffActivity extends AppCompatActivity implements ExitActivityD
         NavUtils.navigateUpFromSameTask(this);
     }
 
-    public void testniMetodkojiNeradiNista() {
-
-    }
-
-    public void testniMetodkojiNeradiNista2() {
-
-    }
-
-    public void testniMetodkojiNeradiNista3() {
-
-    }
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
     }
 
-    public void tandaraMandara() {
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.e("onCreateLoader", "usao u onCreateLoader");
+        String projection[] = {
+                StuffContract.StuffEntry._ID,
+                StuffContract.StuffEntry.COLUMN_STUFF_NAME,
+                StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER,
+                StuffContract.StuffEntry.COLUMN_STUFF_CIJENA,
+                StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY,
+                StuffContract.StuffEntry.COLUMN_STUFF_TYPE,
+                StuffContract.StuffEntry.COLUMN_SUPPLIER_NAME,
+                StuffContract.StuffEntry.COLUMN_SUPPLIER_PHONE,
+                StuffContract.StuffEntry.COLUMN_SUPPLIER_EMAIL
+        };
 
+        switch (id) {
+            case EDIT_STUFF_LOADER_ID:
+                return new CursorLoader(this, currentUri, projection, null, null, null);
+            default:
+                throw new IllegalArgumentException("NESTO NAOPAKO SA KURSOROM EDIT ACTIVITIJA BRALE!");
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.e("onLoadFinished","usao sam u onLoadFinished");
+        currentCursor = data;
+        Log.e("onLoadFinished", "currentCursor = " + currentCursor);
+
+        // Pozivam metod koji cita podatke iz tekuceg kursora i popunjava polja activitija
+        editStuffMode();
+        Log.e("onLoadFinished", "poslije poziva editStuffMode" + currentCursor);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        currentCursor = null;
     }
 }

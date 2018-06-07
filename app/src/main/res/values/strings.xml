@@ -32,6 +32,7 @@
     <string-array name="tipovi_proizvoda">
         <item>Nov</item>
         <item>Polovan</item>
+        <item>Nepoznato</item>
     </string-array>
 
     // Tekst naziva opcije za snimanje stuffa

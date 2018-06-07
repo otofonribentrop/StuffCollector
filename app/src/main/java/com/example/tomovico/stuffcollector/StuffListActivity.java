@@ -91,6 +91,7 @@ public class StuffListActivity extends AppCompatActivity implements LoaderManage
         values.put(StuffContract.StuffEntry.COLUMN_STUFF_CIJENA, 4);
         values.put(StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY, 10);
         values.put(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER, "Veseli Četvrtak");
+        values.put(StuffContract.StuffEntry.COLUMN_STUFF_TYPE, StuffContract.StuffEntry.TYPE_NEW);
         values.put(StuffContract.StuffEntry.COLUMN_SUPPLIER_NAME, "Veseli Četvrtak");
         values.put(StuffContract.StuffEntry.COLUMN_SUPPLIER_PHONE, "+381111234567");
         values.put(StuffContract.StuffEntry.COLUMN_SUPPLIER_EMAIL, "nabavka@veselicetvrtak.com");
@@ -120,12 +121,13 @@ public class StuffListActivity extends AppCompatActivity implements LoaderManage
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         // Kreiram projekciju za ovaj Loader
-        String[] projection = {
+        String projection[] = {
                 StuffContract.StuffEntry._ID,
                 StuffContract.StuffEntry.COLUMN_STUFF_NAME,
                 StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER,
                 StuffContract.StuffEntry.COLUMN_STUFF_CIJENA,
                 StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY,
+                StuffContract.StuffEntry.COLUMN_STUFF_TYPE,
                 StuffContract.StuffEntry.COLUMN_SUPPLIER_NAME,
                 StuffContract.StuffEntry.COLUMN_SUPPLIER_PHONE,
                 StuffContract.StuffEntry.COLUMN_SUPPLIER_EMAIL

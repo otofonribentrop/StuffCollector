@@ -21,9 +21,10 @@ public class StuffDbHelper extends SQLiteOpenHelper {
             + StuffContract.StuffEntry.TABLE_NAME
             + " (" + StuffContract.StuffEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + StuffContract.StuffEntry.COLUMN_STUFF_NAME + " TEXT NOT NULL, "
-            + StuffContract.StuffEntry.COLUMN_STUFF_CIJENA + " INTEGER NOT NULL, "
             + StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER + " TEXT NOT NULL, "
+            + StuffContract.StuffEntry.COLUMN_STUFF_CIJENA + " INTEGER NOT NULL, "
             + StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY + " INTEGER NOT NULL DEFAULT 0, "
+            + StuffContract.StuffEntry.COLUMN_STUFF_TYPE + " INTEGER NOT NULL DEFAULT 0, "
             //+ StuffContract.StuffEntry.COLUMN_STUFF_PICTURE + " " ne znam za sada kako sa slikom
             + StuffContract.StuffEntry.COLUMN_SUPPLIER_NAME + " TEXT NOT NULL, "
             + StuffContract.StuffEntry.COLUMN_SUPPLIER_PHONE + " TEXT NOT NULL, "

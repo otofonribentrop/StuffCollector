@@ -30,10 +30,17 @@ public final class StuffContract {
         public static final String COLUMN_STUFF_PRODUCER = "product_producer";
         public static final String COLUMN_STUFF_CIJENA = "product_price";
         public static final String COLUMN_STUFF_QUANTITY = "product_quantity";
+        public static final String COLUMN_STUFF_TYPE = "product_type";
         //public static final String COLUMN_STUFF_PICTURE = "product_picture";
         public static final String COLUMN_SUPPLIER_NAME = "supplier_name";
         public static final String COLUMN_SUPPLIER_PHONE = "supplier_phone";
         public static final String COLUMN_SUPPLIER_EMAIL = "supplier_email";
+
+        // Definicija konstanti za stanja proizvoda
+        public static final int TYPE_NEW = 0;
+        public static final int TYPE_USED = 1;
+        public static final int TYPE_UNKNOWN = 2;
+
 
     }
 }
