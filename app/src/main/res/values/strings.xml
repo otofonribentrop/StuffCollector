@@ -64,4 +64,16 @@
 
     // Poruka na negativnom dugmetu alert dialoga
     <string name="alert_negative_msg">Ostani</string>
+
+    // Nazim AlertDialoga za izlazak iz activityja AddSTuffActivity
+    <string name="nochange_alert_dialog_name">Izlaz iz Edit/Dodaj Stuff</string>
+
+    // Poruka za AlertDialog koji upozorava da postoje nesnimljene promjene
+    <string name="nochange_alert_dialog_msg">Niste napravili izmjene na ovoj formi.\nDa li želite izaći?</string>
+
+    // Poruka na pozitivnom dugmentu alert dialoga
+    <string name="nochange_alert_pozitive_msg">Napusti</string>
+
+    // Poruka na negativnom dugmetu alert dialoga
+    <string name="nochange_alert_negative_msg">Ostani</string>
 </resources>

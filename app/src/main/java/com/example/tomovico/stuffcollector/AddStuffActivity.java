@@ -96,7 +96,7 @@ public class AddStuffActivity
         spinner_tip_proizvoda = (Spinner) findViewById(R.id.spinner_tip_proizvoda);
         et_supplier_name = (EditText) findViewById(R.id.et_supplier_name);
         et_supplier_email = (EditText) findViewById(R.id.et_supplier_email);
-        et_supplier_phone = (EditText) findViewById(R.id.et_stuff_price);
+        et_supplier_phone = (EditText) findViewById(R.id.et_supplier_phone);
         et_stuff_kolicina = (EditText) findViewById(R.id.et_stuff_kolicina);
 
         // Postavljam OnTouchListener na sve Viewove
@@ -117,9 +117,6 @@ public class AddStuffActivity
 
             //Inicijalizujem loader
             getLoaderManager().initLoader(EDIT_STUFF_LOADER_ID, null, this);
-
-            Log.e("onCreate", "EditStuff mode");
-
         }
         // Ukoliko je Uri prazan onda sam u add new stuff modu
         else {
@@ -171,7 +168,7 @@ public class AddStuffActivity
 
     private void editStuffMode() {
 
-        Log.e("editStuffMode", "usao u metod dditStuffMode");
+        Log.e("editStuffMode", "usao u metod EditStuffMode");
 
         if (currentCursor == null) {
             Log.e("editStuffMode", "currentCursor je NULL");
@@ -184,21 +181,35 @@ public class AddStuffActivity
         // Uzimam podatke iz kursora
         String stuffProducer = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER));
         String stuffName = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_NAME));
-        int stuffPrice = currentCursor.getInt(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_CIJENA));
+        String stuffPrice = Float.toString(currentCursor.getFloat(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_CIJENA)));
         int tipProizvoda = currentCursor.getInt(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_TYPE));
-        String supplierName = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER));
-        String supplierEmail = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER));
-        String supplierPhone = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER));
-        String stuffKolicina = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER));
+        String supplierName = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_SUPPLIER_NAME));
+        String supplierEmail = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_SUPPLIER_EMAIL));
+        String supplierPhone = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_SUPPLIER_PHONE));
+        String stuffKolicina = Integer.toString(currentCursor.getInt(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY)));
 
         // Popunjavam polja activitija sa podacima iz cursora
         et_stuff_producer.setText(stuffProducer);
+        Log.e("editStuffMode", "stuffProducer: " + stuffProducer);
+
         et_stuff_name.setText(stuffName);
+        Log.e("editStuffMode", "stuffName: " + stuffName);
+
         et_stuff_price.setText(stuffPrice + "");
+        Log.e("editStuffMode", "stuffPrice: " + stuffPrice);
+
         et_supplier_name.setText(supplierName);
+        Log.e("editStuffMode", "supplierName: " + supplierName);
+
         et_supplier_email.setText(supplierEmail);
+        Log.e("editStuffMode", "supplierEmail: " + supplierEmail);
+
         et_supplier_phone.setText(supplierPhone);
+        Log.e("editStuffMode", "supplierPhone: " + supplierPhone);
+
         et_stuff_kolicina.setText(stuffKolicina + "");
+        Log.e("editStuffMode", "stuffKolicina: " + stuffKolicina);
+
 
         switch (tipProizvoda) {
             case StuffContract.StuffEntry.TYPE_NEW:
@@ -215,7 +226,6 @@ public class AddStuffActivity
                 break;
         }
 
-        Log.e("editStuffMode","Izlazim iz editStuffMode");
     }
 
     @Override
@@ -226,9 +236,18 @@ public class AddStuffActivity
         // Na osnovu izabranog itema biram akciju
         switch (itemSelected) {
             case R.id.snimi_stuff:
-                snimiStuff();
-                finish();
-                return true;
+                // Ukoliko tekuci stuff nije izmjenjen onda posalji poruku da se pokusava snimati nesto sto nije izmjenjeno
+                if (!stuffHasChanged) {
+                    // Prikaz poruke
+                    DialogFragment snimasBezIzmjene = new NoChangeDialog();
+                    snimasBezIzmjene.show(getSupportFragmentManager(), "EE");
+                    return true;
+                } else {
+                    snimiStuff();
+                    finish();
+                    return true;
+                }
+
             case android.R.id.home:
                 // Ukoliko tekuci stuff nije izmjenjen onda izlazim normalno
                 if (!stuffHasChanged) {
@@ -256,7 +275,7 @@ public class AddStuffActivity
         // Sakupljam podatke iz Viewa
         String stuffName = et_stuff_name.getText().toString().trim();
         String stuffProducer = et_stuff_producer.getText().toString().trim();
-        int stuffPrice = Integer.valueOf(et_stuff_price.getText().toString().trim());
+        float stuffPrice = Float.valueOf(et_stuff_price.getText().toString().trim());
         int spinnerState = stuffType;
         String supplierName = et_supplier_name.getText().toString().trim();
         String supplierEmail = et_supplier_email.getText().toString().trim();
@@ -337,13 +356,10 @@ public class AddStuffActivity
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.e("onLoadFinished","usao sam u onLoadFinished");
         currentCursor = data;
-        Log.e("onLoadFinished", "currentCursor = " + currentCursor);
 
         // Pozivam metod koji cita podatke iz tekuceg kursora i popunjava polja activitija
         editStuffMode();
-        Log.e("onLoadFinished", "poslije poziva editStuffMode" + currentCursor);
 
     }
 

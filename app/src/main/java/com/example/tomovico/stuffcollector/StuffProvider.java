@@ -122,8 +122,27 @@ public class StuffProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
 
+        // Dobijam od DbHelpera referencu na db objekat
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
+        // Definisem vrijednost za id apdejtovane kolone
+        int insertedRowId = 0;
 
-        return 0;
+        // Ispitujem vrstu urija koji sam dobio
+        switch (uriMatcher.match(uri)) {
+            case STUFF_ALL:
+                throw new IllegalArgumentException("Updejt ne moze da radi sa urijem cijele tabele");
+            case STUFF_ID:
+                long id = ContentUris.parseId(uri);
+                selection = "_id=?";
+                selectionArgs = new String[] {String.valueOf(id)};
+
+                insertedRowId = db.update(StuffContract.StuffEntry.TABLE_NAME, values, selection, selectionArgs);
+        }
+
+        // Postavljam notificatoin change
+        getContext().getContentResolver().notifyChange(uri, null);
+        // Vracam id insertovane kolone
+        return insertedRowId;
     }
 }
