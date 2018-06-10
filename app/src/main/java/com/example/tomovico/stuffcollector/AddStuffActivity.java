@@ -2,6 +2,7 @@ package com.example.tomovico.stuffcollector;
 
 import android.app.Dialog;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -172,56 +173,64 @@ public class AddStuffActivity
             return;
         }
 
-        // Pozicioniranje kursora
-        currentCursor.moveToFirst();
+        if (currentUri == null) {
+            Log.e("editStuffMode", "currentCursor je null");
+        }
 
         // Uzimam podatke iz kursora
-        String stuffModel = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_MODEL));
-        String stuffName = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_NAME));
-        String stuffPrice = Float.toString(currentCursor.getFloat(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_CIJENA)));
-        int tipProizvoda = currentCursor.getInt(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_TYPE));
-        String supplierName = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_SUPPLIER_NAME));
-        String supplierEmail = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_SUPPLIER_EMAIL));
-        String supplierPhone = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_SUPPLIER_PHONE));
-        String stuffKolicina = Integer.toString(currentCursor.getInt(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY)));
+        Log.e("editStuffMode", "colIndex Model: " + currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_MODEL));
 
-        // Popunjavam polja activitija sa podacima iz cursora
-        et_stuff_model.setText(stuffModel);
-        Log.e("editStuffMode", "stuffProducer: " + stuffModel);
+        if (currentCursor != null && currentCursor.moveToFirst()) {
+            String stuffModel = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_MODEL));
+            String stuffName = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_NAME));
+            String stuffPrice = Float.toString(currentCursor.getFloat(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_CIJENA)));
+            int tipProizvoda = currentCursor.getInt(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_TYPE));
+            String supplierName = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_SUPPLIER_NAME));
+            String supplierEmail = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_SUPPLIER_EMAIL));
+            String supplierPhone = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_SUPPLIER_PHONE));
+            String stuffKolicina = Integer.toString(currentCursor.getInt(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY)));
 
-        et_stuff_name.setText(stuffName);
-        Log.e("editStuffMode", "stuffName: " + stuffName);
+            // Popunjavam polja activitija sa podacima iz cursora
+            et_stuff_model.setText(stuffModel);
+            Log.e("editStuffMode", "stuffProducer: " + stuffModel);
 
-        et_stuff_price.setText(stuffPrice + "");
-        Log.e("editStuffMode", "stuffPrice: " + stuffPrice);
+            et_stuff_name.setText(stuffName);
+            Log.e("editStuffMode", "stuffName: " + stuffName);
 
-        et_supplier_name.setText(supplierName);
-        Log.e("editStuffMode", "supplierName: " + supplierName);
+            et_stuff_price.setText(stuffPrice + "");
+            Log.e("editStuffMode", "stuffPrice: " + stuffPrice);
 
-        et_supplier_email.setText(supplierEmail);
-        Log.e("editStuffMode", "supplierEmail: " + supplierEmail);
+            et_supplier_name.setText(supplierName);
+            Log.e("editStuffMode", "supplierName: " + supplierName);
 
-        et_supplier_phone.setText(supplierPhone);
-        Log.e("editStuffMode", "supplierPhone: " + supplierPhone);
+            et_supplier_email.setText(supplierEmail);
+            Log.e("editStuffMode", "supplierEmail: " + supplierEmail);
 
-        et_stuff_kolicina.setText(stuffKolicina + "");
-        Log.e("editStuffMode", "stuffKolicina: " + stuffKolicina);
+            et_supplier_phone.setText(supplierPhone);
+            Log.e("editStuffMode", "supplierPhone: " + supplierPhone);
 
+            et_stuff_kolicina.setText(stuffKolicina + "");
+            Log.e("editStuffMode", "stuffKolicina: " + stuffKolicina);
 
-        switch (tipProizvoda) {
-            case StuffContract.StuffEntry.TYPE_NEW:
-                spinner_tip_proizvoda.setSelection(StuffContract.StuffEntry.TYPE_NEW);
-                stuffType = StuffContract.StuffEntry.TYPE_NEW;
-                break;
-            case StuffContract.StuffEntry.TYPE_USED:
-                spinner_tip_proizvoda.setSelection(StuffContract.StuffEntry.TYPE_NEW);
-                stuffType = StuffContract.StuffEntry.TYPE_USED;
-                break;
-            case StuffContract.StuffEntry.TYPE_UNKNOWN:
-                spinner_tip_proizvoda.setSelection(StuffContract.StuffEntry.TYPE_NEW);
-                stuffType = StuffContract.StuffEntry.TYPE_UNKNOWN;
-                break;
+            switch (tipProizvoda) {
+                case StuffContract.StuffEntry.TYPE_NEW:
+                    spinner_tip_proizvoda.setSelection(StuffContract.StuffEntry.TYPE_NEW);
+                    stuffType = StuffContract.StuffEntry.TYPE_NEW;
+                    break;
+                case StuffContract.StuffEntry.TYPE_USED:
+                    spinner_tip_proizvoda.setSelection(StuffContract.StuffEntry.TYPE_NEW);
+                    stuffType = StuffContract.StuffEntry.TYPE_USED;
+                    break;
+                case StuffContract.StuffEntry.TYPE_UNKNOWN:
+                    spinner_tip_proizvoda.setSelection(StuffContract.StuffEntry.TYPE_NEW);
+                    stuffType = StuffContract.StuffEntry.TYPE_UNKNOWN;
+                    break;
+            }
         }
+
+
+
+
 
     }
 
@@ -244,6 +253,13 @@ public class AddStuffActivity
                     finish();
                     return true;
                 }
+            case R.id.obrisi_stuff:
+                obrisiStuff();
+                finish();
+                return true;
+
+            case R.id.naruci_stuff:
+                return true;
 
             case android.R.id.home:
                 // Ukoliko tekuci stuff nije izmjenjen onda izlazim normalno
@@ -256,6 +272,8 @@ public class AddStuffActivity
                 DialogFragment noviFragment = new ExitActivityDialog();
                 noviFragment.show(getSupportFragmentManager(), "AAAAAAAAAAAAAAAAAAAAAA");
                 return true;
+
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -267,6 +285,25 @@ public class AddStuffActivity
         return true;
     }
 
+    public void obrisiStuff() {
+
+        // Ako sam u Add New Stuff onda saljem obavjestenje da se nema sta obrisati
+        if (currentUri == null) {
+            Toast.makeText(this, "Ne moze se obrisati Item koji jos nije dodat u bazu", Toast.LENGTH_SHORT).show();
+
+        } else {
+            // Ako sam u Edit Stuff onda brisem item za datim idjem
+            long currentId = ContentUris.parseId(currentUri);
+            int deletedRows = getContentResolver().delete(currentUri, null, null);
+
+            if (deletedRows >= 1) {
+                Toast.makeText(this, "Stuff uspjesno obrisan.", Toast.LENGTH_SHORT);
+            } else {
+                Toast.makeText(this, "Stuff nije obrisan.", Toast.LENGTH_SHORT);
+            }
+        }
+
+    }
     public void snimiStuff() {
 
         // Sakupljam podatke iz Viewa

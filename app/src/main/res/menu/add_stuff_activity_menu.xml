@@ -11,4 +11,9 @@
         android:id="@+id/obrisi_stuff"
         android:title="@string/obrisi_stuff"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/naruci_stuff"
+        android:title="@string/naruci_stuff"
+        app:showAsAction="never"/>
 </menu>

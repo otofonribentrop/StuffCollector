@@ -116,7 +116,39 @@ public class StuffProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+
+        // Dobijam od DbHelpera referencu na db objekat
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // Definisem vrijednost za id obrisane kolone
+        int deletedRows = 0;
+
+        switch (uriMatcher.match(uri)) {
+            case STUFF_ALL:
+                deletedRows = db.delete(StuffContract.StuffEntry.TABLE_NAME, null, null);
+
+                // Postavljam notificatoin change
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                return deletedRows;
+            case STUFF_ID:
+                // Odredjujem id reda koji treba obrisati
+                long colonId = ContentUris.parseId(uri);
+
+                // Definisem selection i selectionArgs parametre
+                selection = "_id=?";
+                selectionArgs = new String[] {String.valueOf(colonId)};
+
+                // Pozivam db.delete i vracam broj obrisanih redova
+                deletedRows = db.delete(StuffContract.StuffEntry.TABLE_NAME, selection, selectionArgs);
+
+                // Postavljam notificatoin change
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                return deletedRows;
+            default:
+                throw new IllegalArgumentException("Greska u URIju za brisanje!");
+        }
     }
 
     @Override

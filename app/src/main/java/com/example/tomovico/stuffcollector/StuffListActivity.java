@@ -114,6 +114,7 @@ public class StuffListActivity extends AppCompatActivity implements LoaderManage
     }
 
     private void deleteAll() {
+        int deletedRows = getContentResolver().delete(StuffContract.StuffEntry.CONTENT_URI, null, null);
 
     }
 

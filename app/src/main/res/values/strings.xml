@@ -39,7 +39,10 @@
     <string name="snimi_stuff">Snimi</string>
 
     // Tekst naziva opcije za brisanje stuffa
-    <string name="obrisi_stuff">Obrisi</string>
+    <string name="obrisi_stuff">Obrisi proizvod</string>
+
+    // Tekst naziva opcije za narucivanje novih proizvoda
+    <string name="naruci_stuff">Naruči</string>
 
     // Naziv za addStuffActivity u add modu
     <string name="add_stuff_mode">Add New Stuff</string>
