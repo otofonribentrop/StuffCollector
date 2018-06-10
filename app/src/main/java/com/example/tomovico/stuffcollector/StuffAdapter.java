@@ -28,9 +28,9 @@ public class StuffAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
 
         // Reference na TexViewove u koje idu podaci
-        TextView nameView = (TextView) view.findViewById(R.id.tv_ime);
-        TextView cijenaView = (TextView) view.findViewById(R.id.tv_cijena);
-        TextView kolicinaView = (TextView) view.findViewById(R.id.tv_kolicina);
+        TextView nameView = (TextView) view.findViewById(R.id.naziv_proizvoda);
+        TextView cijenaView = (TextView) view.findViewById(R.id.cijena_proizvoda);
+        TextView kolicinaView = (TextView) view.findViewById(R.id.kolicina_proizvoda);
 
         // Podaci iz cursora
         String name = cursor.getString(cursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_NAME));
@@ -38,8 +38,9 @@ public class StuffAdapter extends CursorAdapter {
         int kolicina = cursor.getInt(cursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY));
 
         // Upisivanje podataka iz kursora u Textviewove
+        String km = context.getString(R.string.KM);
         nameView.setText(name);
-        cijenaView.setText(String.valueOf(cijena));
+        cijenaView.setText(km + " " + String.valueOf(cijena));
         kolicinaView.setText(String.valueOf(kolicina));
 
 

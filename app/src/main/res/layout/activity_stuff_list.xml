@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,8 +14,12 @@
         android:id="@+id/activity_stuff_list_view">
     </ListView>
 
-    <TextView
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_dugme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/as_text_view"/>
-</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_add_black_24dp"
+        android:layout_margin="16dp"/>
+</RelativeLayout>

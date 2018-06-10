@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.content.CursorLoader;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.tomovico.stuffcollector.data.StuffContract;
 import com.example.tomovico.stuffcollector.data.StuffDbHelper;
 
@@ -50,6 +50,15 @@ public class StuffListActivity extends AppCompatActivity implements LoaderManage
                 Uri currentUri = ContentUris.withAppendedId(StuffContract.StuffEntry.CONTENT_URI, id);
                 Intent intent = new Intent(StuffListActivity.this, AddStuffActivity.class);
                 intent.setData(currentUri);
+                startActivity(intent);
+            }
+        });
+
+        FloatingActionButton fab = findViewById(R.id.fab_dugme);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(StuffListActivity.this, AddStuffActivity.class);
                 startActivity(intent);
             }
         });

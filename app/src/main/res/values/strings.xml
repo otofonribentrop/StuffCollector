@@ -79,4 +79,12 @@
 
     // Poruka na negativnom dugmetu alert dialoga
     <string name="nochange_alert_negative_msg">Ostani</string>
+
+    // Naziv za dugme za prodaju
+    <string name="dugme_za_prodaju">Dugme za prodaju</string>
+
+    <string name="us">\u0024</string>
+    <string name="Rs">\u20B9</string>
+    <string name="KM">KM</string>
+
 </resources>
