@@ -48,7 +48,7 @@ public class AddStuffActivity
     private Cursor currentCursor = null;
 
     // Varijable u kojima cuvam Viewove sa podacima
-    private EditText et_stuff_producer;
+    private EditText et_stuff_model;
     private EditText et_stuff_name;
     private EditText et_stuff_price;
     private Spinner spinner_tip_proizvoda;
@@ -90,7 +90,7 @@ public class AddStuffActivity
         Log.e("AddStuff onCreate","curentUri = " + currentUri);
 
         // Postavljam reference na Viewove
-        et_stuff_producer = (EditText) findViewById(R.id.et_stuff_producer);
+        et_stuff_model = (EditText) findViewById(R.id.et_stuff_model);
         et_stuff_name = (EditText) findViewById(R.id.et_stuff_name);
         et_stuff_price = (EditText) findViewById(R.id.et_stuff_price);
         spinner_tip_proizvoda = (Spinner) findViewById(R.id.spinner_tip_proizvoda);
@@ -100,7 +100,7 @@ public class AddStuffActivity
         et_stuff_kolicina = (EditText) findViewById(R.id.et_stuff_kolicina);
 
         // Postavljam OnTouchListener na sve Viewove
-        et_stuff_producer.setOnTouchListener(onTouchListener);
+        et_stuff_model.setOnTouchListener(onTouchListener);
         et_stuff_name.setOnTouchListener(onTouchListener);
         et_stuff_price.setOnTouchListener(onTouchListener);
         et_supplier_name.setOnTouchListener(onTouchListener);
@@ -162,9 +162,6 @@ public class AddStuffActivity
             }
         });
     }
-    private void addStuffMode() {
-
-    }
 
     private void editStuffMode() {
 
@@ -179,7 +176,7 @@ public class AddStuffActivity
         currentCursor.moveToFirst();
 
         // Uzimam podatke iz kursora
-        String stuffProducer = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER));
+        String stuffModel = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_MODEL));
         String stuffName = currentCursor.getString(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_NAME));
         String stuffPrice = Float.toString(currentCursor.getFloat(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_CIJENA)));
         int tipProizvoda = currentCursor.getInt(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_TYPE));
@@ -189,8 +186,8 @@ public class AddStuffActivity
         String stuffKolicina = Integer.toString(currentCursor.getInt(currentCursor.getColumnIndex(StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY)));
 
         // Popunjavam polja activitija sa podacima iz cursora
-        et_stuff_producer.setText(stuffProducer);
-        Log.e("editStuffMode", "stuffProducer: " + stuffProducer);
+        et_stuff_model.setText(stuffModel);
+        Log.e("editStuffMode", "stuffProducer: " + stuffModel);
 
         et_stuff_name.setText(stuffName);
         Log.e("editStuffMode", "stuffName: " + stuffName);
@@ -274,7 +271,7 @@ public class AddStuffActivity
 
         // Sakupljam podatke iz Viewa
         String stuffName = et_stuff_name.getText().toString().trim();
-        String stuffProducer = et_stuff_producer.getText().toString().trim();
+        String stuffModel = et_stuff_model.getText().toString().trim();
         float stuffPrice = Float.valueOf(et_stuff_price.getText().toString().trim());
         int spinnerState = stuffType;
         String supplierName = et_supplier_name.getText().toString().trim();
@@ -286,7 +283,7 @@ public class AddStuffActivity
         // Kreiram vrijednosti koje upisujem u bazu
         ContentValues values = new ContentValues();
         values.put(StuffContract.StuffEntry.COLUMN_STUFF_NAME, stuffName);
-        values.put(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER, stuffProducer);
+        values.put(StuffContract.StuffEntry.COLUMN_STUFF_MODEL, stuffModel);
         values.put(StuffContract.StuffEntry.COLUMN_STUFF_CIJENA, stuffPrice);
         values.put(StuffContract.StuffEntry.COLUMN_STUFF_TYPE, spinnerState);
         values.put(StuffContract.StuffEntry.COLUMN_SUPPLIER_NAME, supplierName);
@@ -337,7 +334,7 @@ public class AddStuffActivity
         String projection[] = {
                 StuffContract.StuffEntry._ID,
                 StuffContract.StuffEntry.COLUMN_STUFF_NAME,
-                StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER,
+                StuffContract.StuffEntry.COLUMN_STUFF_MODEL,
                 StuffContract.StuffEntry.COLUMN_STUFF_CIJENA,
                 StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY,
                 StuffContract.StuffEntry.COLUMN_STUFF_TYPE,

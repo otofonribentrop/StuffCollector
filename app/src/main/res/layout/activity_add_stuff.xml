@@ -31,15 +31,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:id="@+id/et_stuff_producer"
-                android:hint="Proizvođač"/>
+                android:id="@+id/et_stuff_model"
+                android:hint="Naziv proizvoda"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:id="@+id/et_stuff_name"
-                android:hint="Naziv proizvoda"/>
+                android:hint="Model proizvoda"/>
 
             <EditText
                 android:layout_width="match_parent"

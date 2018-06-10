@@ -27,7 +27,7 @@ public final class StuffContract {
         // Definicija konstanti za imena kolona
         public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_STUFF_NAME = "product_name";
-        public static final String COLUMN_STUFF_PRODUCER = "product_producer";
+        public static final String COLUMN_STUFF_MODEL = "product_model";
         public static final String COLUMN_STUFF_CIJENA = "product_price";
         public static final String COLUMN_STUFF_QUANTITY = "product_quantity";
         public static final String COLUMN_STUFF_TYPE = "product_type";

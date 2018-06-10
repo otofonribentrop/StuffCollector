@@ -90,11 +90,11 @@ public class StuffListActivity extends AppCompatActivity implements LoaderManage
         values.put(StuffContract.StuffEntry.COLUMN_STUFF_NAME, "Zagor Strip");
         values.put(StuffContract.StuffEntry.COLUMN_STUFF_CIJENA, 4);
         values.put(StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY, 10);
-        values.put(StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER, "Veseli Četvrtak");
+        values.put(StuffContract.StuffEntry.COLUMN_STUFF_MODEL, "Veseli Četvrtak redovni Zagor br. 100");
         values.put(StuffContract.StuffEntry.COLUMN_STUFF_TYPE, StuffContract.StuffEntry.TYPE_NEW);
         values.put(StuffContract.StuffEntry.COLUMN_SUPPLIER_NAME, "Veseli Četvrtak");
         values.put(StuffContract.StuffEntry.COLUMN_SUPPLIER_PHONE, "+381111234567");
-        values.put(StuffContract.StuffEntry.COLUMN_SUPPLIER_EMAIL, "nabavka@veselicetvrtak.com");
+        values.put(StuffContract.StuffEntry.COLUMN_SUPPLIER_EMAIL, "ognjen.tomovic@gmail.com");
 
         // Unosim podatke u db pomocu ContentProvider klase
         Uri currentUri = getContentResolver().insert(StuffContract.StuffEntry.CONTENT_URI, values);
@@ -124,7 +124,7 @@ public class StuffListActivity extends AppCompatActivity implements LoaderManage
         String projection[] = {
                 StuffContract.StuffEntry._ID,
                 StuffContract.StuffEntry.COLUMN_STUFF_NAME,
-                StuffContract.StuffEntry.COLUMN_STUFF_PRODUCER,
+                StuffContract.StuffEntry.COLUMN_STUFF_MODEL,
                 StuffContract.StuffEntry.COLUMN_STUFF_CIJENA,
                 StuffContract.StuffEntry.COLUMN_STUFF_QUANTITY,
                 StuffContract.StuffEntry.COLUMN_STUFF_TYPE,
